@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — AL AZEEM KIRANA AND GENERAL STORE</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="stamp">AA</div>
+    <h1>Admin Panel</h1>
+    <p class="auth-sub">Al Azeem Kirana &amp; General Store — Owner Login</p>
+
+    <form id="adminLoginForm">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="adminUsername" required autofocus>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="adminPassword" required>
+      </div>
+      <div class="form-msg error" id="adminLoginMsg"></div>
+      <button class="btn btn-dark btn-block" style="margin-top:18px;" type="submit">Log In</button>
+    </form>
+    <p class="auth-switch"><a href="/">← Back to store</a></p>
+  </div>
+</div>
+<script src="/js/admin.js" data-page="admin-login"></script>
+</body>
+</html>

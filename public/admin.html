@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — AL AZEEM KIRANA AND GENERAL STORE</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<body>
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="admin-brand">
+      <div class="stamp">AA</div>
+      <div class="admin-brand-text">AL AZEEM<br>Admin Panel</div>
+    </div>
+    <nav class="admin-nav">
+      <a href="#dashboard" data-tab="dashboard" class="active">📊 Dashboard</a>
+      <a href="#stock" data-tab="stock">📥 Today's Stock Entry</a>
+      <a href="#products" data-tab="products">🧺 All Products</a>
+      <a href="#orders" data-tab="orders">📦 Orders</a>
+    </nav>
+    <div class="admin-nav-foot">
+      <button class="btn btn-outline btn-block btn-sm" style="border-color:rgba(246,239,227,0.4);color:var(--paper);" id="logoutBtn">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <section class="tab-section" id="tab-dashboard">
+      <div class="admin-header"><h1>Today's Overview</h1></div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="label">Today's Sales</div><div class="value" id="statSales">₹0</div><div class="sub" id="statOrders">0 orders</div></div>
+        <div class="stat-card"><div class="label">Products in Stock</div><div class="value" id="statProducts">0</div><div class="sub">Across all categories</div></div>
+        <div class="stat-card"><div class="label">Pending Orders</div><div class="value" id="statPending">0</div><div class="sub">Need action</div></div>
+        <div class="stat-card"><div class="label">Registered Customers</div><div class="value" id="statCustomers">0</div><div class="sub">Total sign-ups</div></div>
+      </div>
+      <div class="panel">
+        <h2>Low Stock Alerts</h2>
+        <table>
+          <thead><tr><th>Item</th><th>Category</th><th>Left</th><th>Threshold</th><th></th></tr></thead>
+          <tbody id="lowStockBody"></tbody>
+        </table>
+        <p id="lowStockEmpty" style="font-size:13px;color:#74807A;display:none;">Nothing running low — good stock levels.</p>
+      </div>
+    </section>
+
+    <!-- STOCK ENTRY -->
+    <section class="tab-section" id="tab-stock" style="display:none;">
+      <div class="admin-header"><h1>Today's Stock Entry</h1></div>
+      <div class="panel">
+        <h2>Add what you bought today</h2>
+        <p style="font-size:13px;color:#74807A;margin-top:-10px;margin-bottom:16px;">If the item name + category already exists, the quantity is added to existing stock. Otherwise a new product is created.</p>
+        <form id="stockForm">
+          <div class="form-grid">
+            <div class="field"><label>Item name</label><input type="text" id="sName" required></div>
+            <div class="field">
+              <label>Category</label>
+              <input type="text" id="sCategory" list="catList" required placeholder="e.g. Groceries">
+              <datalist id="catList"></datalist>
+            </div>
+            <div class="field">
+              <label>Unit</label>
+              <select id="sUnit">
+                <option>kg</option><option>g</option><option>litre</option><option>ml</option>
+                <option>pack</option><option>piece</option><option>dozen</option><option>box</option>
+              </select>
+            </div>
+            <div class="field"><label>Quantity purchased today</label><input type="number" id="sQty" min="0" step="0.01" required></div>
+            <div class="field"><label>Cost price (per unit)</label><input type="number" id="sCost" min="0" step="0.01"></div>
+            <div class="field"><label>Retail price (per unit)</label><input type="number" id="sRetail" min="0" step="0.01" required></div>
+            <div class="field"><label>Wholesale price (per unit)</label><input type="number" id="sWholesale" min="0" step="0.01"></div>
+            <div class="field"><label>Low stock alert below</label><input type="number" id="sThreshold" min="0" step="0.01" value="5"></div>
+            <div class="field"><label>Photo (optional)</label><input type="file" id="sImage" accept="image/*"></div>
+          </div>
+          <div class="form-msg" id="stockMsg"></div>
+          <button class="btn btn-primary" style="margin-top:16px;" type="submit">Add to Stock</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="tab-section" id="tab-products" style="display:none;">
+      <div class="admin-header">
+        <h1>All Products</h1>
+        <input type="text" id="productSearch" placeholder="Search products…" style="padding:8px 12px;border:1px solid var(--rule);border-radius:6px;font-size:13px;">
+      </div>
+      <div class="panel" style="padding:0;overflow-x:auto;">
+        <table>
+          <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Retail ₹</th><th>Wholesale ₹</th><th>Updated</th><th></th></tr></thead>
+          <tbody id="productsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section class="tab-section" id="tab-orders" style="display:none;">
+      <div class="admin-header"><h1>Orders</h1></div>
+      <div class="panel" style="padding:0;overflow-x:auto;">
+        <table>
+          <thead><tr><th>#</th><th>Customer</th><th>Address</th><th>Items</th><th>Total ₹</th><th>Payment</th><th>Status</th><th>Placed</th></tr></thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Edit product modal -->
+<div class="overlay" id="editOverlay"></div>
+<aside class="drawer" id="editDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:17px;">Edit Product</h2>
+    <button class="icon-btn" style="color:var(--ink);border-color:var(--rule);" id="closeEdit">✕</button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="eId">
+    <div class="field"><label>Item name</label><input type="text" id="eName"></div>
+    <div class="field"><label>Category</label><input type="text" id="eCategory"></div>
+    <div class="field"><label>Unit</label><input type="text" id="eUnit"></div>
+    <div class="field"><label>Stock quantity</label><input type="number" id="eQty" step="0.01"></div>
+    <div class="field"><label>Cost price</label><input type="number" id="eCost" step="0.01"></div>
+    <div class="field"><label>Retail price</label><input type="number" id="eRetail" step="0.01"></div>
+    <div class="field"><label>Wholesale price</label><input type="number" id="eWholesale" step="0.01"></div>
+    <div class="field"><label>Low stock threshold</label><input type="number" id="eThreshold" step="0.01"></div>
+    <div class="form-msg" id="editMsg"></div>
+  </div>
+  <div class="drawer-foot" style="display:flex;gap:10px;">
+    <button class="btn btn-danger" id="deleteProductBtn">Delete</button>
+    <button class="btn btn-primary btn-block" id="saveProductBtn">Save Changes</button>
+  </div>
+</aside>
+
+<script src="/js/admin.js" data-page="admin"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm Email — AL AZEEM KIRANA AND GENERAL STORE</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="stamp">AA</div>
+    <h1 id="verifyTitle">Confirming your email…</h1>
+    <p class="auth-sub" id="verifySub">Please wait a moment.</p>
+    <p class="auth-switch"><a href="/login.html">Go to login →</a></p>
+  </div>
+</div>
+<script>
+const API = "/api";
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+const title = document.getElementById("verifyTitle");
+const sub = document.getElementById("verifySub");
+
+async function run() {
+  if (!token) {
+    title.textContent = "Missing confirmation link";
+    sub.textContent = "Please use the confirmation link from your email.";
+    return;
+  }
+  try {
+    const res = await fetch(`${API}/auth/customer/verify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Could not confirm your email.");
+    title.textContent = "Email confirmed!";
+    sub.textContent = "Your account is now active. You can log in.";
+  } catch (err) {
+    title.textContent = "Could not confirm email";
+    sub.textContent = err.message;
+  }
+}
+run();
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AL AZEEM KIRANA AND GENERAL STORE — Wholesale &amp; Retail</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand-block">
+      <div class="stamp">AA</div>
+      <div>
+        <div class="brand-name">AL AZEEM<br>KIRANA &amp; GENERAL STORE</div>
+        <div class="brand-sub">Wholesale · Retail</div>
+      </div>
+    </div>
+    <div class="search-box">
+      <input id="searchInput" type="text" placeholder="Search rice, oil, atta, soap…">
+      <button id="searchBtn" aria-label="Search">🔍</button>
+    </div>
+    <button type="button" id="scanBtn" class="icon-btn" aria-label="Scan QR">📷 Scan</button>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="ordersBtn">📦 My Orders</button>
+      <button class="icon-btn" id="accountBtn">👤 <span id="accountLabel">Login</span></button>
+      <button class="icon-btn" id="cartBtn">🛒 Cart<span class="badge" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <nav class="category-strip">
+    <div class="container" id="categoryStrip">
+      <a class="cat-pill active" data-cat="">All items</a>
+    </div>
+  </nav>
+  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:white; padding:16px; border-radius:12px; max-width:340px; width:90%;">
+    <div id="qr-reader" style="width:100%;"></div>
+    <button type="button" id="closeScannerBtn" class="btn btn-outline btn-block" style="margin-top:12px;">Close</button>
+  </div>
+</div>
+</header>
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <span class="eyebrow">Open daily · Same-day local delivery</span>
+      <h1>Everything for the kitchen &amp; home, stocked fresh today.</h1>
+      <p>Order groceries, household essentials and FMCG at fair retail prices — or ask for wholesale rates on bulk orders. Stock you see is stock we actually have on the shelf, updated every day.</p>
+      <div class="hero-actions">
+        <a href="#shop" class="btn btn-primary">Start shopping</a>
+        <button class="btn btn-outline" id="wholesaleInfoBtn">Wholesale enquiry</button>
+      </div>
+    </div>
+    <div class="ledger-card">
+      <div class="ledger-title">Today at the store</div>
+      <div class="row"><span>Items in stock</span><span id="statItems">—</span></div>
+      <div class="row"><span>Categories</span><span id="statCats">—</span></div>
+      <div class="row"><span>Delivery</span><span>Same day, local</span></div>
+      <div class="row"><span>Payment</span><span>UPI / Card / COD</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="container section" id="shop">
+  <div class="section-head">
+    <h2 id="shopTitle">All items</h2>
+    <span class="tag" id="resultCount"></span>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="stamp">AA</div>
+    <p>No items match your search right now.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="brand-name">AL AZEEM KIRANA &amp; GENERAL STORE</div>
+      <p style="max-width:320px;font-size:13px;margin-top:8px;">Your neighbourhood store for groceries, household items and daily essentials — wholesale and retail.</p>
+    </div>
+    <div>
+      <div class="ledger-title" style="color:var(--turmeric-light)">Store owner?</div>
+      <a href="/admin" class="btn btn-dark btn-sm" style="margin-top:6px;">Go to Admin Panel →</a>
+    </div>
+  </div>
+  <div class="container footer-note">© <span id="year"></span> Al Azeem Kirana and General Store. All rights reserved.</div>
+</footer>
+
+<!-- Cart Drawer -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:17px;">Your Cart</h2>
+    <button class="icon-btn" style="color:var(--ink);border-color:var(--rule);" id="closeCart">✕</button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot">
+    <div class="ledger-card" style="margin-bottom:14px;">
+      <div class="row"><span>Subtotal</span><span id="cartTotal">₹0</span></div>
+    </div>
+    <button class="btn btn-primary btn-block" id="checkoutBtn">Checkout</button>
+  </div>
+</aside>
+
+<!-- Checkout Modal -->
+<div class="overlay" id="checkoutOverlay"></div>
+<aside class="drawer" id="checkoutDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:17px;">Checkout</h2>
+    <button class="icon-btn" style="color:var(--ink);border-color:var(--rule);" id="closeCheckout">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="field">
+  <label>House/Flat No. & Landmark</label>
+  <input type="text" id="houseNumber" placeholder="e.g. Flat 302, Near Water Tank" />
+</div>
+    <div class="field">
+  <label>Delivery address</label>
+  <textarea id="deliveryAddress" rows="3" placeholder="Enter your address or use location button below"></textarea>
+  <button type="button" id="useLocationBtn" class="btn" style="margin-top:8px;">📍 Use my current location</button>
+  <div id="locationMap" style="height:200px; border-radius:8px; margin-top:8px; display:none;"></div>
+</div>
+    <div class="field">
+      <label>Payment method</label>
+      <select id="paymentMethod">
+        <option value="cod">Cash on Delivery</option>
+        <option value="online">Online — UPI / Card</option>
+      </select>
+    </div>
+    <div class="form-msg error" id="checkoutMsg"></div>
+    <div class="ledger-card" style="margin-top:16px;">
+      <div class="ledger-title">Order summary</div>
+      <div id="checkoutSummary"></div>
+      <div class="row" style="border-top:1px solid var(--rule);margin-top:4px;padding-top:10px;font-weight:600;"><span>Total</span><span id="checkoutTotal">₹0</span></div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-primary btn-block" id="placeOrderBtn">Place Order</button>
+  </div>
+</aside>
+
+<!-- My Orders Drawer -->
+<div class="overlay" id="ordersOverlay"></div>
+<aside class="drawer" id="ordersDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:17px;">My Orders</h2>
+    <button class="icon-btn" style="color:var(--ink);border-color:var(--rule);" id="closeOrders">✕</button>
+  </div>
+  <div class="drawer-body" id="ordersBody"></div>
+</aside>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/store.js"></script>
+</body>
+</html>

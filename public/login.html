@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — AL AZEEM KIRANA AND GENERAL STORE</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="stamp">AA</div>
+    <h1 id="formTitle">Welcome back</h1>
+    <p class="auth-sub">Log in to order from Al Azeem Kirana &amp; General Store</p>
+
+    <div id="googleBtnContainer" style="display:flex;justify-content:center;margin-top:18px;"></div>
+    <div class="auth-divider" style="text-align:center;font-size:12px;color:#8B8367;margin:16px 0;">or use your email</div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <div class="form-msg error" id="loginMsg"></div>
+      <button class="btn btn-primary btn-block" style="margin-top:18px;" type="submit">Log In</button>
+      <p class="auth-switch"><a href="/forgot-password.html">Forgot password?</a></p>
+    </form>
+
+    <form id="registerForm" style="display:none;">
+      <div class="field">
+        <label>Full name</label>
+        <input type="text" id="regName" required>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label>Phone number (optional)</label>
+        <input type="tel" id="regPhone" placeholder="98765 43210">
+      </div>
+      <div class="field">
+        <label>Delivery address</label>
+        <textarea id="regAddress" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="regPassword" required minlength="4">
+      </div>
+      <div class="form-msg error" id="registerMsg"></div>
+      <button class="btn btn-primary btn-block" style="margin-top:18px;" type="submit">Create Account</button>
+    </form>
+
+    <p class="auth-switch">
+      <span id="switchToRegisterWrap">New here? <a href="#" id="switchToRegister">Create an account</a></span>
+      <span id="switchToLoginWrap" style="display:none;">Already have an account? <a href="#" id="switchToLogin">Log in</a></span>
+    </p>
+    <p class="auth-switch"><a href="/">← Back to store</a></p>
+  </div>
+</div>
+<script src="/js/store.js" data-page="login"></script>
+</body>
+</html>
