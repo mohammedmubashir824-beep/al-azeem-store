@@ -1,6 +1,9 @@
 {
   "name": "al-azeem-kirana-store",
   "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
   "description": "AL AZEEM KIRANA AND GENERAL STORE - wholesale & retail online store with admin panel",
   "main": "server.js",
   "scripts": {
