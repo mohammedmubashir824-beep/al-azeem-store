@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <body>
 
 <header class="topbar">
@@ -25,7 +23,6 @@
       <input id="searchInput" type="text" placeholder="Search rice, oil, atta, soap…">
       <button id="searchBtn" aria-label="Search">🔍</button>
     </div>
-    <button type="button" id="scanBtn" class="icon-btn" aria-label="Scan QR">📷 Scan</button>
     <div class="topbar-actions">
       <button class="icon-btn" id="ordersBtn">📦 My Orders</button>
       <button class="icon-btn" id="accountBtn">👤 <span id="accountLabel">Login</span></button>
@@ -37,11 +34,6 @@
       <a class="cat-pill active" data-cat="">All items</a>
     </div>
   </nav>
-  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:white; padding:16px; border-radius:12px; max-width:340px; width:90%;">
-    <div id="qr-reader" style="width:100%;"></div>
-    <button type="button" id="closeScannerBtn" class="btn btn-outline btn-block" style="margin-top:12px;">Close</button>
-  </div>
 </div>
 </header>
 

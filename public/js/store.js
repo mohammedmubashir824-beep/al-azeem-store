@@ -196,7 +196,6 @@ if (document.getElementById("productGrid")) {
           <div class="product-foot">
             <div class="price">${money(p.retailPrice)}<br><small>retail / ${p.unit}</small></div>
           </div>
-          <div class="product-qr" id="qr-${p.id}" style=margin-top:6px; display:flex; justify-content:center;"></div>
           <div class="product-foot" style="margin-top:6px;">
             <div class="qty-stepper">
               <button type="button" class="qty-minus">−</button>
@@ -218,11 +217,6 @@ if (document.getElementById("productGrid")) {
         addToCart(p, Number(qtyVal.textContent));
       });
       grid.appendChild(card);
-      new QRCode(document.getElementById(`qr-${p.id}`), {
-  text: `PRODUCT:${p.id}`,
-  width: 150,
-  height: 150
-});
     });
   }
 
@@ -497,7 +491,6 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
     renderAccount();
     updateCartBadge();
     setupLocationButton();
-    setupScanner();
     try {
       const [products, cats] = await Promise.all([api("/products"), api("/products/categories")]);
       allProducts = products;
@@ -510,54 +503,6 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
     }
   }
   init();
-}
-function setupScanner() {
-  const scanBtn = document.getElementById('scanBtn');
-  const modal = document.getElementById('scannerModal');
-  const closeBtn = document.getElementById('closeScannerBtn');
-  if (!scanBtn || !modal) return;
-
-  let html5QrCode;
-
-  scanBtn.addEventListener('click', async () => {
-    modal.style.display = 'flex';
-    html5QrCode = new Html5Qrcode("qr-reader");
-    try {
-      await html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 200 },
-        (decodedText) => {
-          handleScanResult(decodedText);
-        },
-        () => {}
-      );
-    } catch (err) {
-      showToast('Camera access denied or unavailable');
-      modal.style.display = 'none';
-    }
-  });
-
-  closeBtn.addEventListener('click', async () => {
-    if (html5QrCode) {
-      try { await html5QrCode.stop(); } catch (e) {}
-    }
-    modal.style.display = 'none';
-  });
-
-  function handleScanResult(decodedText) {
-    if (!decodedText.startsWith('PRODUCT:')) {
-      showToast('Not a valid product QR code');
-      return;
-    }
-    const productId = decodedText.replace('PRODUCT:', '');
-    const product = allProducts.find((p) => String(p.id) === productId);
-    if (!product) {
-      showToast('Product not found');
-      return;
-    }
-    addToCart(product, 1);
-    closeBtn.click();
-  }
 }
 function showToast(message) {
   let toast = document.getElementById('toast-notification');
