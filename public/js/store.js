@@ -220,8 +220,8 @@ if (document.getElementById("productGrid")) {
       grid.appendChild(card);
       new QRCode(document.getElementById(`qr-${p.id}`), {
   text: `PRODUCT:${p.id}`,
-  width: 64,
-  height: 64
+  width: 150,
+  height: 150
 });
     });
   }
