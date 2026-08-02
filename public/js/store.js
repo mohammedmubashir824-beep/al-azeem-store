@@ -194,9 +194,20 @@ if (document.getElementById("productGrid")) {
           <div class="product-name">${p.name}</div>
           <div class="product-unit">per ${p.unit}</div>
           <div class="product-foot">
-            <div class="price">${money(p.retailPrice)}<br><small>retail / ${p.unit}</small></div>
+            <div class="price" id="price-${p.id}">${money(p.wholesalePrice || p.retailPrice)}<br><small>pice / ${p.unit}</small></div>
+               ${p.wholesalePrice ? `<div style="font-size:1em; margin-top:2px;"><span style="text-decoration:line-through;">${money(p.retailPrice)}</span> <small>retail / ${p.unit}</small></div>` : ''}
           </div>
           <div class="product-foot" style="margin-top:6px;">
+          ${p.unit === 'kg' ? `
+          <div class="field" style="margin-bottom:6px;">
+            <select class="weight-select" style="width:100%; padding:6px; border-radius:6px;">
+            <option value="0.1">100g</option>
+            <option value="0.25" selected>250g</option>
+            <option value="0.5">500g</option>
+            <option value="1">1kg</option>
+            </select>
+             </div>
+            ` : ''}
             <div class="qty-stepper">
               <button type="button" class="qty-minus">−</button>
               <span class="qty-val">1</span>
@@ -213,21 +224,43 @@ if (document.getElementById("productGrid")) {
       card.querySelector(".qty-plus").addEventListener("click", () => {
         qtyVal.textContent = Math.min(p.stockQty, Number(qtyVal.textContent) + 1);
       });
+      if (p.unit === 'kg') {
+  const weightSelect = card.querySelector('.weight-select');
+  const priceDiv = card.querySelector(`#price-${p.id}`);
+  const basePrice = p.wholesalePrice || p.retailPrice;
+  weightSelect.addEventListener('change', () => {
+    const frac = parseFloat(weightSelect.value);
+    priceDiv.innerHTML = `${money(basePrice * frac)}<br><small>for ${weightSelect.options[weightSelect.selectedIndex].text}</small>`;
+  });
+}
       card.querySelector(".add-btn").addEventListener("click", () => {
-        addToCart(p, Number(qtyVal.textContent));
-      });
+  const frac = p.unit === 'kg' && card.querySelector('.weight-select')
+    ? parseFloat(card.querySelector('.weight-select').value)
+    : 1;
+  addToCart(p, Number(qtyVal.textContent), frac);
+});
       grid.appendChild(card);
     });
   }
 
-  function addToCart(product, qty) {
+  function addToCart(product, qty, packSize = 1) {
     const cart = getCart();
-    const line = cart.find((l) => l.productId === product.id);
-    if (line) {
-      line.qty = Math.min(product.stockQty, line.qty + qty);
-    } else {
-      cart.push({ productId: product.id, name: product.name, unit: product.unit, price: product.retailPrice, qty, maxStock: product.stockQty });
-    }
+   const line = cart.find((l) => l.productId === product.id && l.packSize === packSize);
+if (line) {
+  const maxPacks = Math.floor(product.stockQty / packSize);
+  line.qty = Math.min(maxPacks, line.qty + qty);
+} else {
+  const maxPacks = Math.floor(product.stockQty / packSize);
+  cart.push({
+    productId: product.id,
+    name: product.name,
+    unit: product.unit,
+    packSize: packSize,
+    price: (product.wholesalePrice || product.retailPrice) * packSize,
+    qty: Math.min(qty, maxPacks),
+    maxStock: maxPacks
+  });
+}
     setCart(cart);
     updateCartBadge();
     openCart();
@@ -303,7 +336,7 @@ async function updateAddressFromCoords(lat, lon) {
         <div class="cart-line">
           <div>
             <div class="cart-line-name">${l.name}</div>
-            <div class="cart-line-meta">${l.qty} × ${money(l.price)} / ${l.unit}</div>
+            <div class="cart-line-meta">${l.packSize && l.packSize < 1 ? `${l.packSize * 1000}g` : l.packSize ? `${l.packSize}kg` : l.unit} × ${l.qty}</div>
           </div>
           <div class="cart-line-price">${money(l.qty * l.price)}</div>
           <button class="remove-x" data-i="${i}" aria-label="Remove">✕</button>
@@ -381,7 +414,7 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
         items: cart.map((l) => ({ productId: l.productId, qty: l.qty })),
         paymentMethod,
         deliveryAddress,
-        priceMode: "retail"
+        priceMode: "wholesale"
       };
       const { order } = await api("/orders", { method: "POST", body: JSON.stringify(payload) });
 
