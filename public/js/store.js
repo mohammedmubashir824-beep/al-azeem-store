@@ -501,14 +501,7 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
   });
 
   // ---- wholesale enquiry ----
-  document.getElementById("wholesaleInfoBtn").addEventListener("click", async () => {
-    try {
-      const info = await api("/store-info");
-      alert(`For wholesale / bulk orders, call or WhatsApp us at ${info.phone}. We'll share wholesale pricing and minimum order quantities for your business.`);
-    } catch {
-      alert("Please call the store directly to discuss wholesale pricing.");
-    }
-  });
+  
 
   // ---- search ----
   document.getElementById("searchBtn").addEventListener("click", () => {
