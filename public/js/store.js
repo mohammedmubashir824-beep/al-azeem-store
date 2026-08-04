@@ -198,7 +198,7 @@ if (document.getElementById("productGrid")) {
                ${p.wholesalePrice ? `<div style="font-size:1em; margin-top:2px;"><span style="text-decoration:line-through;">${money(p.retailPrice)}</span> <small>retail / ${p.unit}</small></div>` : ''}
           </div>
           <div class="product-foot" style="margin-top:6px;">
-          ${p.unit === 'kg' ? `
+          ${p.unit === 'kg' && !/\d+\s*(kg|g)\b/i.test(p.name) ? `
           <div class="field" style="margin-bottom:6px;">
             <select class="weight-select" style="width:100%; padding:6px; border-radius:6px;">
             <option value="0.1">100g</option>
@@ -224,7 +224,7 @@ if (document.getElementById("productGrid")) {
       card.querySelector(".qty-plus").addEventListener("click", () => {
         qtyVal.textContent = Math.min(p.stockQty, Number(qtyVal.textContent) + 1);
       });
-      if (p.unit === 'kg') {
+      if (p.unit === 'kg' && !/\d+\s*(kg|g)\b/i.test(p.name)) {
   const weightSelect = card.querySelector('.weight-select');
   const priceDiv = card.querySelector(`#price-${p.id}`);
   const basePrice = p.wholesalePrice || p.retailPrice;
@@ -234,10 +234,13 @@ if (document.getElementById("productGrid")) {
   });
 }
       card.querySelector(".add-btn").addEventListener("click", () => {
-  const frac = p.unit === 'kg' && card.querySelector('.weight-select')
-    ? parseFloat(card.querySelector('.weight-select').value)
+  const weightSelect = card.querySelector('.weight-select');
+  const frac = p.unit === 'kg' && weightSelect
+    ? parseFloat(weightSelect.value)
     : 1;
   addToCart(p, Number(qtyVal.textContent), frac);
+  qtyVal.textContent = 1;
+  if (weightSelect) weightSelect.value = "0.25";
 });
       grid.appendChild(card);
     });
@@ -501,9 +504,6 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
   });
 
   // ---- wholesale enquiry ----
-  
-
-  // ---- search ----
   document.getElementById("searchBtn").addEventListener("click", () => {
     activeSearch = document.getElementById("searchInput").value.trim();
     renderGrid();
