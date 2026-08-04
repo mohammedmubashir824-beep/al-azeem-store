@@ -85,7 +85,7 @@ router.post("/customer/register", async (req, res) => {
     console.error("Confirmation email failed to send:", err.message);
   }
 
-  const token = signToken({ id: customer.id, name: customer.name, role: "customer" });
+  const token = signToken({ id: customer.id, name: customer.name, email: customer.email, role: "customer" });
   res.status(201).json(customerResponse(customer, token));
 });
 
@@ -101,7 +101,7 @@ router.post("/customer/login", async (req, res) => {
   if (!customer || !customer.password_hash || !bcrypt.compareSync(password, customer.password_hash)) {
     return res.status(401).json({ error: "Incorrect email or password." });
   }
-  const token = signToken({ id: customer.id, name: customer.name, role: "customer" });
+  const token = signToken({ id: customer.id, name: customer.name, email: customer.email, role: "customer" });
   res.json(customerResponse(customer, token));
 });
 
@@ -213,7 +213,7 @@ router.post("/customer/google", async (req, res) => {
     }
   }
 
-  const token = signToken({ id: customer.id, name: customer.name, role: "customer" });
+  const token = signToken({ id: customer.id, name: customer.name, email: customer.email, role: "customer" });
   res.json(customerResponse(customer, token));
 });
 
