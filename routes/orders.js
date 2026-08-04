@@ -88,6 +88,8 @@ router.post("/", requireCustomer, async (req, res) => {
   if (orderError) return res.status(500).json({ error: "Order could not be saved. Please try again." });
 const mappedOrder = mapOrder(order);
 if (req.customer.email) {
+  console.log("Before sending order confirmation email");
+  console.log("Customer email:",req.customer.email);
   sendOrderConfirmationEmail(req.customer.email, req.customer.name, mappedOrder).catch((err) => {
     console.error("Failed to send order confirmation email:", err.message);
   });
