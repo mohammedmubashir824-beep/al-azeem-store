@@ -91,7 +91,7 @@ if (req.customer.email) {
   console.log("Before sending order confirmation email");
   console.log("Customer email:",req.customer.email);
   sendOrderConfirmationEmail(req.customer.email, req.customer.name, mappedOrder).catch((err) => {
-    console.error("Failed to send order confirmation email:", err.message);
+    console.error("Failed to send order confirmation email:", err);
   });
 }
 res.status(201).json({ message: "Order placed.", order: mappedOrder });
