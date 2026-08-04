@@ -1,6 +1,7 @@
 const express = require("express");
 const supabase = require("../db/supabase");
 const { requireAdmin, requireCustomer } = require("../middleware/auth");
+const { sendOrderConfirmationEmail } = require("../utils/email");
 
 const router = express.Router();
 
@@ -85,7 +86,13 @@ router.post("/", requireCustomer, async (req, res) => {
     .single();
 
   if (orderError) return res.status(500).json({ error: "Order could not be saved. Please try again." });
-  res.status(201).json({ message: "Order placed.", order: mapOrder(order) });
+const mappedOrder = mapOrder(order);
+if (req.customer.email) {
+  sendOrderConfirmationEmail(req.customer.email, req.customer.name, mappedOrder).catch((err) => {
+    console.error("Failed to send order confirmation email:", err.message);
+  });
+}
+res.status(201).json({ message: "Order placed.", order: mappedOrder });
 });
 
 // ---- GET /api/orders/my - customer's own order history ----

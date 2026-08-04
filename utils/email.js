@@ -57,4 +57,28 @@ async function sendPasswordResetEmail(toEmail, name, token) {
   });
 }
 
-module.exports = { sendConfirmationEmail, sendPasswordResetEmail };
+async function sendOrderConfirmationEmail(toEmail, name, order) {
+  const resend = getResend();
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping order confirmation email.");
+    return;
+  }
+  const itemsHtml = order.items.map(
+    (it) => `<li>${it.name} × ${it.qty} — ₹${(it.price * it.qty).toFixed(2)}</li>`
+  ).join("");
+  await resend.emails.send({
+    from: getFromAddress(),
+    to: toEmail,
+    subject: `Order Confirmed — AL AZEEM Kirana & General Store (#${order.id})`,
+    html: `
+      <p>Hi ${name},</p>
+      <p>Thank you for your order! Here's a summary:</p>
+      <ul>${itemsHtml}</ul>
+      <p><strong>Total: ₹${order.total.toFixed(2)}</strong></p>
+      <p>Payment method: ${order.paymentMethod === "cod" ? "Cash on Delivery" : "Online"}</p>
+      <p>Delivery address: ${order.deliveryAddress || "Not provided"}</p>
+      <p>We'll notify you as your order status updates.</p>
+    `
+  });
+}
+module.exports = { sendConfirmationEmail, sendPasswordResetEmail, sendOrderConfirmationEmail };
