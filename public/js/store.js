@@ -359,15 +359,22 @@ async function updateAddressFromCoords(lat, lon) {
     document.getElementById("cartTotal").textContent = money(total);
   }
 
-  function openCart() {
-    renderCart();
-    document.getElementById("overlay").classList.add("open");
-    document.getElementById("cartDrawer").classList.add("open");
-  }
+    function openCart() {
+  renderCart();
+  document.getElementById("overlay").classList.add("open");
+  document.getElementById("cartDrawer").classList.add("open");
+
+  // Prevent the background page from scrolling
+  document.body.style.overflow = "hidden";
+}
+
   function closeCart() {
-    document.getElementById("overlay").classList.remove("open");
-    document.getElementById("cartDrawer").classList.remove("open");
-  }
+  document.getElementById("overlay").classList.remove("open");
+  document.getElementById("cartDrawer").classList.remove("open");
+
+  // Allow the background page to scroll again
+  document.body.style.overflow = "";
+}
   document.getElementById("cartBtn").addEventListener("click", openCart);
   document.getElementById("closeCart").addEventListener("click", closeCart);
   document.getElementById("overlay").addEventListener("click", closeCart);
