@@ -655,18 +655,30 @@ document.getElementById("profileOverlay").classList.remove("open");
 
   // ---- wholesale enquiry ----
   document.getElementById("searchBtn").addEventListener("click", () => {
-    activeSearch = document.getElementById("searchInput").value.trim();
-    renderGrid();
-  });
-  document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { activeSearch = e.target.value.trim(); renderGrid(); }
-    if (e.key === "Escape") {
-    e.target.value = "";
-    activeSearch = "";
-    renderGrid();
-    updateClearSearchButton();
+  activeSearch = document.getElementById("searchInput").value.trim();
+  renderGrid();
+  updateClearSearchButton();
+
+  if (activeSearch) {
+    document.querySelector(".product-grid").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   }
-  });
+});
+  document.getElementById("searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+  activeSearch = e.target.value.trim();
+  renderGrid();
+  updateClearSearchButton();
+
+  if (activeSearch) {
+    document.querySelector(".product-grid").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}
     const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearchBtn");
 
