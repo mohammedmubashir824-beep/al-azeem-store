@@ -18,6 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve the frontend (customer site + admin panel) as static files
 app.use(express.static(path.join(__dirname, "public")));
+app.get(["/terms.html", "/terms.html/"], (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "terms.html"));
+});
 
 // Make sure a default admin account exists on first run
 db.ensureDefaultAdmin();

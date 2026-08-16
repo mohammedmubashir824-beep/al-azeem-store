@@ -104,6 +104,89 @@ router.post("/customer/login", async (req, res) => {
   const token = signToken({ id: customer.id, name: customer.name, email: customer.email, role: "customer" });
   res.json(customerResponse(customer, token));
 });
+// ---- Customer profile ----
+router.get("/customer/profile", async (req, res) => {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+
+  if (!token) {
+    return res.status(401).json({ error: "Please log in to view your profile." });
+  }
+
+  try {
+    const jwt = require("jsonwebtoken");
+    const secret = process.env.JWT_SECRET || "dev_secret_change_me";
+    const decoded = jwt.verify(token, secret);
+
+    if (decoded.role !== "customer") {
+      return res.status(401).json({ error: "Invalid customer session." });
+    }
+
+    const { data: customer, error } = await supabase
+      .from("customers")
+      .select("id, name, email, phone, address, email_verified")
+      .eq("id", decoded.id)
+      .maybeSingle();
+
+    if (error || !customer) {
+      return res.status(404).json({ error: "Customer profile not found." });
+    }
+
+    res.json(customer);
+  } catch (err) {
+    return res.status(401).json({ error: "Your session has expired. Please log in again." });
+  }
+});
+
+// ---- Update customer profile ----
+router.put("/customer/profile", async (req, res) => {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+
+  if (!token) {
+    return res.status(401).json({ error: "Please log in to update your profile." });
+  }
+
+  try {
+    const jwt = require("jsonwebtoken");
+    const secret = process.env.JWT_SECRET || "dev_secret_change_me";
+    const decoded = jwt.verify(token, secret);
+
+    if (decoded.role !== "customer") {
+      return res.status(401).json({ error: "Invalid customer session." });
+    }
+
+    const { name, phone, address } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Name is required." });
+    }
+
+    const { data: customer, error } = await supabase
+      .from("customers")
+      .update({
+        name: name.trim(),
+        phone: phone ? phone.trim() : null,
+        address: address ? address.trim() : ""
+      })
+      .eq("id", decoded.id)
+      .select("id, name, email, phone, address, email_verified")
+      .single();
+
+    if (error) {
+      console.error("Profile update error:", error);
+      return res.status(500).json({ error: "Could not save your profile." });
+    }
+
+    res.json(customer);
+  } catch (err) {
+    return res.status(401).json({ error: "Your session has expired. Please log in again." });
+  }
+});
 
 // ---- Confirm email ----
 router.post("/customer/verify-email", async (req, res) => {

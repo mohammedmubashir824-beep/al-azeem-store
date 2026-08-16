@@ -20,14 +20,40 @@
       </div>
     </div>
     <div class="search-box">
-      <input id="searchInput" type="text" placeholder="Search rice, oil, atta, soap…">
-      <button id="searchBtn" aria-label="Search">🔍</button>
-    </div>
+  <input id="searchInput" type="text" placeholder="Search rice, oil, atta, soap…">
+  <button id="clearSearchBtn" type="button" aria-label="Clear search">✕</button>
+  <button id="searchBtn" type="button" aria-label="Search">🔍</button>
+</div>
     <div class="topbar-actions">
       <button class="icon-btn" id="ordersBtn">📦 My Orders</button>
       <button class="icon-btn" id="accountBtn">👤 <span id="accountLabel">Login</span></button>
       <button class="icon-btn" id="cartBtn">🛒 Cart<span class="badge" id="cartCount">0</span></button>
     </div>
+    <div class="account-menu" id="accountMenu">
+  <div class="account-menu-head">
+    <div class="account-avatar">👤</div>
+    <div>
+      <strong id="profileMenuName">User</strong>
+      <small id="profileMenuEmail">Email</small>
+    </div>
+  </div>
+
+  <button class="account-menu-item" id="profileBtn">
+    👤 My Profile
+  </button>
+
+  <button class="account-menu-item" id="profileOrdersBtn">
+    📦 My Orders
+  </button>
+
+  <button class="account-menu-item" id="profileAddressBtn">
+    📍 Delivery Address
+  </button>
+
+  <button class="account-menu-item logout-item" id="logoutBtn">
+    🚪 Logout
+  </button>
+</div>
   </div>
   <nav class="category-strip">
     <div class="container" id="categoryStrip">
@@ -71,15 +97,91 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <div class="brand-name">AL AZEEM KIRANA &amp; GENERAL STORE</div>
-      <p style="max-width:320px;font-size:13px;margin-top:8px;">Your neighbourhood store for groceries, household items and daily essentials — wholesale and retail.</p>
-    </div>
-  </div>
-  <div class="container footer-note">© <span id="year"></span> Al Azeem Kirana and General Store. All rights reserved.</div>
-</footer>
 
+  <div class="container footer-grid">
+
+    <!-- Store Information -->
+    <div>
+      <div class="brand-name">
+        AL AZEEM KIRANA &amp; GENERAL STORE
+      </div>
+
+      <p style="max-width:320px;font-size:13px;margin-top:8px;">
+        Your neighbourhood store for groceries, household items and
+        daily essentials — wholesale and retail.
+      </p>
+
+      <!-- Contact -->
+      <div style="margin-top:16px;">
+  <div style="font-size:13px;font-weight:600;margin-bottom:5px;">
+    📞 Contact
+  </div>
+
+  <a href="tel:+918801125320" style="font-size:13px;">
+    +91 88011 25320
+  </a>
+
+  <span style="margin:0 8px;opacity:.5;">|</span>
+
+  <a
+    href="https://wa.me/918801125320"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="font-size:13px;"
+  >
+    WhatsApp
+  </a>
+</div>
+
+      <!-- Address -->
+      <div style="margin-top:16px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:5px;">
+          📍 Store Address
+        </div>
+
+        <p style="font-size:13px;margin:0;max-width:320px;">
+  <a
+    href="https://www.google.com/maps/search/?api=1&query=17.3525674,78.4838343"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Near Mohd Cafe Hotel,<br>
+    Sultan Shahi, Talab Katta,<br>
+    Hyderabad, Telangana – 500053,<br>
+    India
+  </a>
+</p>
+      </div>
+
+      <!-- Footer Links -->
+      <div style="margin-top:18px;">
+        <a href="/terms.html" style="font-size:13px;">
+          Terms &amp; Conditions
+        </a>
+
+        <span style="margin:0 8px;opacity:.5;">|</span>
+
+        <a href="/privacy.html" style="font-size:13px;">
+          Privacy Policy
+        </a>
+
+        <span style="margin:0 8px;opacity:.5;">|</span>
+
+        <a href="/about.html" style="font-size:13px;">
+          About Us
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="container footer-note">
+    © <span id="year"></span>
+    Al Azeem Kirana and General Store. All rights reserved.
+  </div>
+
+</footer>
 <!-- Cart Drawer -->
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="cartDrawer">
@@ -111,6 +213,15 @@
     <div class="field">
   <label>Delivery address</label>
   <textarea id="deliveryAddress" rows="3" placeholder="Enter your address or use location button below"></textarea>
+  <div id="savedAddressBox" style="margin-top:10px; display:none;">
+  <div style="font-size:13px; font-weight:600; margin-bottom:6px;">
+    📍 Saved delivery address
+  </div>
+
+  <div id="savedAddressText"
+       style="font-size:13px; padding:10px; border:1px solid var(--rule); border-radius:8px; margin-bottom:8px;">
+  </div>
+</div>
   <button type="button" id="useLocationBtn" class="btn" style="margin-top:8px;">📍 Use my current location</button>
   <div id="locationMap" style="height:200px; border-radius:8px; margin-top:8px; display:none;"></div>
 </div>
@@ -130,6 +241,78 @@
   </div>
   <div class="drawer-foot">
     <button class="btn btn-primary btn-block" id="placeOrderBtn">Place Order</button>
+  </div>
+</aside>
+
+<!-- Profile Drawer -->
+<div class="overlay" id="profileOverlay"></div>
+
+<aside class="drawer" id="profileDrawer">
+  <div class="drawer-head">
+    <h2 style="font-size:17px;">My Profile</h2>
+    <button
+      class="icon-btn"
+      style="color:var(--ink);border-color:var(--rule);"
+      id="closeProfile"
+    >✕</button>
+  </div>
+
+  <div class="drawer-body" id="profileBody">
+    <div class="profile-card">
+
+      <div class="profile-avatar">👤</div>
+
+<div style="text-align:center; margin-bottom:20px;">
+  <h3 style="margin:0 0 5px;">My Profile</h3>
+  <p style="margin:0; font-size:13px; opacity:.7;">
+    Manage your account and delivery details
+  </p>
+</div>
+
+<div class="field">
+  <label>Name</label>
+  <input type="text" id="profileName" placeholder="Your name">
+</div>
+
+<div class="field">
+  <label>Email</label>
+  <input type="email" id="profileEmail" placeholder="Your email" disabled>
+</div>
+
+<div class="field">
+  <label>Phone</label>
+  <input type="tel" id="profilePhone" placeholder="Your phone number">
+</div>
+
+<div style="margin-top:20px; margin-bottom:10px;">
+  <div style="font-size:14px; font-weight:600;">
+    📍 Delivery Address
+  </div>
+  <div style="font-size:12px; opacity:.7; margin-top:3px;">
+    This address will be used automatically at checkout.
+  </div>
+</div>
+
+<div class="field">
+  <textarea
+    id="profileAddress"
+    rows="4"
+    placeholder="Enter your delivery address"
+  ></textarea>
+</div>
+
+<button class="btn btn-primary btn-block" id="saveProfileBtn">
+  💾 Save Profile
+</button>
+
+<div class="form-msg" id="profileMsg"></div>
+
+
+
+
+      
+
+    </div>
   </div>
 </aside>
 

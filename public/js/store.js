@@ -147,10 +147,19 @@ if (document.getElementById("productGrid")) {
   }
 
   function updateCartBadge() {
-    const cart = getCart();
-    const count = cart.reduce((n, l) => n + l.qty, 0);
-    document.getElementById("cartCount").textContent = count;
-  }
+  const cart = getCart();
+  const count = cart.reduce((n, l) => n + l.qty, 0);
+
+  const badge = document.getElementById("cartCount");
+  badge.textContent = count;
+
+  badge.classList.remove("cart-badge-pop");
+
+  // Restart animation
+  void badge.offsetWidth;
+
+  badge.classList.add("cart-badge-pop");
+}
 
   function renderCategories(cats) {
     const strip = document.getElementById("categoryStrip");
@@ -380,24 +389,53 @@ async function updateAddressFromCoords(lat, lon) {
   document.getElementById("overlay").addEventListener("click", closeCart);
 
   // ---- checkout ----
-  function openCheckout() {
-    const cart = getCart();
-    if (cart.length === 0) return;
-    if (!getToken()) {
-      window.location.href = "/login.html";
-      return;
-    }
-    const summary = document.getElementById("checkoutSummary");
-    summary.innerHTML = cart.map((l) => `
-      <div class="row"><span>${l.name} × ${l.qty}</span><span>${money(l.qty * l.price)}</span></div>
-    `).join("");
-    const total = cart.reduce((s, l) => s + l.qty * l.price, 0);
-    document.getElementById("checkoutTotal").textContent = money(total);
-    document.getElementById("checkoutMsg").style.display = "none";
-    closeCart();
-    document.getElementById("checkoutOverlay").classList.add("open");
-    document.getElementById("checkoutDrawer").classList.add("open");
+  async function openCheckout() {
+  const cart = getCart();
+
+  if (cart.length === 0) return;
+
+  if (!getToken()) {
+    window.location.href = "/login.html";
+    return;
   }
+
+  const summary = document.getElementById("checkoutSummary");
+
+  summary.innerHTML = cart.map((l) =>
+    `<div class="row"><span>${l.name} × ${l.qty}</span><span>${money(l.qty * l.price)}</span></div>`
+  ).join("");
+
+  const total = cart.reduce((s, l) => s + l.qty * l.price, 0);
+
+  document.getElementById("checkoutTotal").textContent = money(total);
+  document.getElementById("checkoutMsg").style.display = "none";
+
+  // Load customer's saved profile address
+  try {
+    const profile = await api("/auth/customer/profile");
+
+    const savedAddressBox = document.getElementById("savedAddressBox");
+    const savedAddressText = document.getElementById("savedAddressText");
+
+    if (profile.address && profile.address.trim()) {
+      savedAddressText.textContent = profile.address;
+      savedAddressBox.style.display = "block";
+
+      // Automatically fill the saved address
+      document.getElementById("deliveryAddress").value = profile.address;
+    } else {
+      savedAddressBox.style.display = "none";
+    }
+
+  } catch (err) {
+    console.error("Could not load saved address:", err);
+  }
+
+  closeCart();
+
+  document.getElementById("checkoutOverlay").classList.add("open");
+  document.getElementById("checkoutDrawer").classList.add("open");
+}
   function closeCheckout() {
     document.getElementById("checkoutOverlay").classList.remove("open");
     document.getElementById("checkoutDrawer").classList.remove("open");
@@ -499,16 +537,121 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
   document.getElementById("closeOrders").addEventListener("click", closeOrders);
   document.getElementById("ordersOverlay").addEventListener("click", closeOrders);
 
-  document.getElementById("accountBtn").addEventListener("click", () => {
-    if (getToken()) {
-      if (confirm(`Log out of ${getCustomerName()}'s account?`)) {
-        clearSession();
-        renderAccount();
-      }
-    } else {
-      window.location.href = "/login.html";
-    }
-  });
+  const accountBtn = document.getElementById("accountBtn");
+const accountMenu = document.getElementById("accountMenu");
+
+accountBtn.addEventListener("click", (event) => {
+  event.stopPropagation();
+
+  if (!getToken()) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  const name = getCustomerName() || "User";
+
+  const profileName = document.getElementById("profileMenuName");
+  if (profileName) {
+    profileName.textContent = name;
+  }
+
+  accountMenu.classList.toggle("open");
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    accountMenu &&
+    !accountMenu.contains(event.target) &&
+    !accountBtn.contains(event.target)
+  ) {
+    accountMenu.classList.remove("open");
+  }
+});
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  clearSession();
+  accountMenu.classList.remove("open");
+  renderAccount();
+  window.location.reload();
+});
+
+document.getElementById("profileOrdersBtn").addEventListener("click", () => {
+  accountMenu.classList.remove("open");
+  document.getElementById("ordersBtn").click();
+});
+document.getElementById("profileBtn").addEventListener("click", async () => {
+  accountMenu.classList.remove("open");
+
+  const profileDrawer = document.getElementById("profileDrawer");
+  const profileOverlay = document.getElementById("profileOverlay");
+
+  profileDrawer.classList.add("open");
+  profileOverlay.classList.add("open");
+
+  try {
+    const profile = await api("/auth/customer/profile");
+
+    document.getElementById("profileName").value = profile.name || "";
+    document.getElementById("profileEmail").value = profile.email || "";
+    document.getElementById("profilePhone").value = profile.phone || "";
+    document.getElementById("profileAddress").value = profile.address || "";
+  } catch (err) {
+    document.getElementById("profileMsg").textContent =
+      err.message || "Could not load your profile.";
+  }
+});
+
+document.getElementById("closeProfile").addEventListener("click", () => {
+  document.getElementById("profileDrawer").classList.remove("open");
+  document.getElementById("profileOverlay").classList.remove("open");
+});
+
+document.getElementById("profileOverlay").addEventListener("click", () => {
+  document.getElementById("profileDrawer").classList.remove("open");
+  document.getElementById("profileOverlay").classList.remove("open");
+});
+
+
+document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+  const name = document.getElementById("profileName").value.trim();
+  const phone = document.getElementById("profilePhone").value.trim();
+  const address = document.getElementById("profileAddress").value.trim();
+  const profileMsg = document.getElementById("profileMsg");
+
+  profileMsg.textContent = "";
+
+  if (!name) {
+    profileMsg.textContent = "Name is required.";
+    return;
+  }
+
+  const button = document.getElementById("saveProfileBtn");
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  try {
+    const updatedProfile = await api("/auth/customer/profile", {
+      method: "PUT",
+      body: JSON.stringify({
+        name,
+        phone,
+        address
+      })
+    });
+
+    localStorage.setItem("aa_customer_name", updatedProfile.name);
+    renderAccount();
+
+    profileMsg.textContent = "Profile saved successfully.";
+    document.getElementById("profileDrawer").classList.remove("open");
+document.getElementById("profileOverlay").classList.remove("open");
+  } catch (err) {
+    profileMsg.textContent = err.message || "Could not save your profile.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Profile";
+  }
+});
+
 
   // ---- wholesale enquiry ----
   document.getElementById("searchBtn").addEventListener("click", () => {
@@ -517,7 +660,34 @@ const deliveryAddress = houseNumber ? `${houseNumber}, ${rawAddress}` : rawAddre
   });
   document.getElementById("searchInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") { activeSearch = e.target.value.trim(); renderGrid(); }
+    if (e.key === "Escape") {
+    e.target.value = "";
+    activeSearch = "";
+    renderGrid();
+    updateClearSearchButton();
+  }
   });
+    const searchInput = document.getElementById("searchInput");
+const clearSearchBtn = document.getElementById("clearSearchBtn");
+
+function updateClearSearchButton() {
+  if (searchInput.value.trim()) {
+    clearSearchBtn.style.setProperty("display", "flex", "important");
+  } else {
+    clearSearchBtn.style.setProperty("display", "none", "important");
+  }
+}
+
+clearSearchBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  activeSearch = "";
+  renderGrid();
+  updateClearSearchButton();
+  searchInput.focus();
+});
+
+searchInput.addEventListener("input", updateClearSearchButton);
+updateClearSearchButton();
 
   // ---- init ----
   async function init() {
