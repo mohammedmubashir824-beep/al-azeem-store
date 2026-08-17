@@ -711,25 +711,7 @@ clearSearchBtn.addEventListener("click", () => {
 
 searchInput.addEventListener("input", updateClearSearchButton);
 updateClearSearchButton();
-const clearSearchBtn = document.getElementById("clearSearchBtn");
 
-function updateClearSearchButton() {
-  if (searchInput.value.trim()) {
-    clearSearchBtn.style.setProperty("display", "flex", "important");
-  } else {
-    clearSearchBtn.style.setProperty("display", "none", "important");
-  }
-}
-
-clearSearchBtn.addEventListener("click", () => {
-  searchInput.value = "";
-  activeSearch = "";
-  renderGrid();
-  updateClearSearchButton();
-  searchInput.focus();
-});
-
-searchInput.addEventListener("input", updateClearSearchButton);
 updateClearSearchButton();
 
   // ---- init ----
