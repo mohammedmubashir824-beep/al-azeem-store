@@ -721,7 +721,9 @@ updateClearSearchButton();
     setupLocationButton();
     try {
       const [products, cats] = await Promise.all([api("/products"), api("/products/categories")]);
-      allProducts = products;
+      allProducts = products.sort(
+  (a, b) => (a.display_order ?? 999) - (b.display_order ?? 999)
+);
       document.getElementById("statItems").textContent = products.length;
       document.getElementById("statCats").textContent = cats.length;
       renderCategories(cats);

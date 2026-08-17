@@ -50,7 +50,11 @@ function mapProduct(p) {
 // ---- GET /api/products - public, with optional search/category filter ----
 router.get("/", async (req, res) => {
   const { category, search } = req.query;
-  let query = supabase.from("products").select("*").order("id", { ascending: true });
+  let query = supabase
+  .from("products")
+  .select("*")
+  .order("display_order",
+    { ascending: true });
   if (category) query = query.ilike("category", category);
   if (search) query = query.ilike("name", `%${search}%`);
 
