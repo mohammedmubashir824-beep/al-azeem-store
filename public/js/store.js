@@ -654,7 +654,8 @@ document.getElementById("profileOverlay").classList.remove("open");
 
 
   // ---- wholesale enquiry ----
-  document.getElementById("searchBtn").addEventListener("click", () => {
+  // ---- search ----
+document.getElementById("searchBtn").addEventListener("click", () => {
   activeSearch = document.getElementById("searchInput").value.trim();
   renderGrid();
   updateClearSearchButton();
@@ -666,20 +667,50 @@ document.getElementById("profileOverlay").classList.remove("open");
     });
   }
 });
-  document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-  activeSearch = e.target.value.trim();
-  renderGrid();
-  updateClearSearchButton();
 
-  if (activeSearch) {
-    document.querySelector(".product-grid").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+document.getElementById("searchInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    activeSearch = e.target.value.trim();
+    renderGrid();
+    updateClearSearchButton();
+
+    if (activeSearch) {
+      document.querySelector(".product-grid").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }
+
+  if (e.key === "Escape") {
+    e.target.value = "";
+    activeSearch = "";
+    renderGrid();
+    updateClearSearchButton();
+  }
+});
+
+const searchInput = document.getElementById("searchInput");
+const clearSearchBtn = document.getElementById("clearSearchBtn");
+
+function updateClearSearchButton() {
+  if (searchInput.value.trim()) {
+    clearSearchBtn.style.setProperty("display", "flex", "important");
+  } else {
+    clearSearchBtn.style.setProperty("display", "none", "important");
   }
 }
-    const searchInput = document.getElementById("searchInput");
+
+clearSearchBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  activeSearch = "";
+  renderGrid();
+  updateClearSearchButton();
+  searchInput.focus();
+});
+
+searchInput.addEventListener("input", updateClearSearchButton);
+updateClearSearchButton();
 const clearSearchBtn = document.getElementById("clearSearchBtn");
 
 function updateClearSearchButton() {
