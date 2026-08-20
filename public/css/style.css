@@ -1481,3 +1481,116 @@ html {
     width: 100%;
   }
 }
+
+@media (max-width: 700px) {
+  #tab-feedback .admin-header h1 {
+    font-size: 22px;
+  }
+
+  #tab-feedback .feedback-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  #tab-feedback .feedback-stat-card {
+    padding: 14px;
+  }
+
+  #tab-feedback .feedback-stat-icon {
+    font-size: 20px;
+  }
+
+  #tab-feedback .feedback-stat-card strong {
+    font-size: 20px;
+  }
+
+  #tab-feedback .panel {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #tab-feedback table {
+    min-width: 850px;
+  }
+}
+
+/* =========================
+   FEEDBACK CARD POLISH
+========================= */
+
+.feedback-stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.feedback-stat-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.feedback-stat-card span {
+  display: block;
+  font-size: 12px;
+  color: #74807A;
+  margin-bottom: 3px;
+}
+
+.feedback-stat-card strong {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+/* Feedback message readability */
+#tab-feedback tbody td:nth-child(5) {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Keep status button readable */
+#tab-feedback .feedback-review-btn {
+  white-space: nowrap;
+}
+
+/* Better table spacing on smaller screens */
+@media (max-width: 700px) {
+  #tab-feedback tbody td:nth-child(5) {
+    max-width: 260px;
+  }
+
+  #tab-feedback tbody td {
+    vertical-align: top;
+  }
+}
+
+@media (max-width: 700px) {
+  #tab-feedback {
+    padding-bottom: 24px;
+  }
+
+  #tab-feedback .admin-header {
+    margin-bottom: 14px;
+  }
+
+  #tab-feedback .feedback-filters {
+    margin-bottom: 14px;
+  }
+
+  #tab-feedback .panel {
+    border-radius: 12px;
+  }
+
+  #tab-feedback table th,
+  #tab-feedback table td {
+    padding: 12px 14px;
+  }
+}
