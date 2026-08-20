@@ -49,6 +49,53 @@ if (document.getElementById("tab-dashboard")) {
     out_for_delivery: "Out for delivery", delivered: "Delivered", cancelled: "Cancelled"
   };
 
+// ---- feedback ----
+async function loadFeedback() {
+  try {
+    const feedback = await api("/dashboard/feedback");
+
+    const body = document.getElementById("feedbackBody");
+
+    if (!feedback || feedback.length === 0) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:30px;">
+            No feedback yet.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    body.innerHTML = feedback.map((item, index) => {
+      const customerName = item.customers?.name || "Unknown";
+      const customerEmail = item.customers?.email || "—";
+
+      const date = new Date(item.created_at).toLocaleString();
+
+      const stars = "⭐".repeat(Number(item.rating));
+
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${customerName}</td>
+          <td>${customerEmail}</td>
+          <td>${stars}</td>
+          <td>${item.message}</td>
+          <td>${date}</td>
+        </tr>
+      `;
+    }).join("");
+
+  } catch (err) {
+    if (!(await handleAuthError(err))) {
+      console.error("Feedback loading error:", err);
+      alert(err.message || "Could not load feedback.");
+    }
+  }
+}
+
+
   // ---- navigation ----
   document.querySelectorAll(".admin-nav a").forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -61,6 +108,7 @@ if (document.getElementById("tab-dashboard")) {
       if (link.dataset.tab === "products") loadProducts();
       if (link.dataset.tab === "orders") loadOrders();
       if (link.dataset.tab === "stock") loadCategoryList();
+      if (link.dataset.tab === "feedback") loadFeedback();
     });
   });
 

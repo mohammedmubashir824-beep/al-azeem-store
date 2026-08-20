@@ -19,6 +19,7 @@
       <a href="#stock" data-tab="stock">📥 Today's Stock Entry</a>
       <a href="#products" data-tab="products">🧺 All Products</a>
       <a href="#orders" data-tab="orders">📦 Orders</a>
+      <a href="#feedback" data-tab="feedback">💬 Feedback</a>
     </nav>
     <div class="admin-nav-foot">
       <button class="btn btn-outline btn-block btn-sm" style="border-color:rgba(246,239,227,0.4);color:var(--paper);" id="logoutBtn">Log Out</button>
@@ -104,6 +105,30 @@
         </table>
       </div>
     </section>
+
+    <!-- FEEDBACK -->
+<section class="tab-section" id="tab-feedback" style="display:none;">
+  <div class="admin-header">
+    <h1>Customer Feedback</h1>
+  </div>
+
+  <div class="panel" style="padding:0;overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Customer</th>
+          <th>Email</th>
+          <th>Rating</th>
+          <th>Feedback</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+
+      <tbody id="feedbackBody"></tbody>
+    </table>
+  </div>
+</section>
 
   </main>
 </div>

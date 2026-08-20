@@ -45,4 +45,29 @@ router.get("/summary", requireAdmin, async (req, res) => {
   });
 });
 
+// ---- Admin: Get customer feedback ----
+router.get("/feedback", requireAdmin, async (req, res) => {
+  const { data, error } = await supabase
+    .from("feedback")
+    .select(`
+      id,
+      customer_id,
+      rating,
+      message,
+      created_at,
+      customers (
+        name,
+        email
+      )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Feedback fetch error:", error);
+    return res.status(500).json({ error: "Could not load feedback." });
+  }
+
+  res.json(data || []);
+});
+
 module.exports = router;
