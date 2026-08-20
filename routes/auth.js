@@ -81,8 +81,20 @@ router.post("/customer/register", async (req, res) => {
      if (error) {
   console.error("Customer registration Supabase error:", error);
 
+  if (error.code === "23505" && error.message.includes("customer_phone_key")) {
+    return res.status(409).json({
+      error: "This phone number is already registered. Please log in."
+    });
+  }
+
+  if (error.code === "23505" && error.message.includes("customers_email_key")) {
+    return res.status(409).json({
+      error: "An account with this email already exists. Please log in."
+    });
+  }
+
   return res.status(500).json({
-    error: error.message || "Could not create account. Please try again."
+    error: "Could not create account. Please try again."
   });
 }
 
