@@ -879,6 +879,9 @@ if (feedbackMessage) {
   feedbackMessage.textContent = "💬 Thank you for your feedback! ⭐";
   feedbackMessage.className = "feedback-success";
   feedbackMessage.style.display = "block";
+   setTimeout(() => {
+    feedbackMessage.style.display = "none";
+  }, 2500);
 }
 
     feedbackText.value = "";
