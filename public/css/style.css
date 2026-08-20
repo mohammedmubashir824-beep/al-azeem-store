@@ -1324,3 +1324,91 @@ html {
   background: #e8f5e9;
   color: #2e7d32;
 }
+
+/* =========================
+   FEEDBACK TABLE UI
+========================= */
+
+#tab-feedback table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#tab-feedback thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#tab-feedback tbody td {
+  padding: 15px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+#tab-feedback tbody tr {
+  transition: background 0.2s ease;
+}
+
+#tab-feedback tbody tr:hover {
+  background: #fafafa;
+}
+
+/* Unread feedback */
+#tab-feedback tbody tr.feedback-unread {
+  background: #fffaf0;
+}
+
+#tab-feedback tbody tr.feedback-unread:hover {
+  background: #fff6df;
+}
+
+/* Feedback message */
+#tab-feedback tbody td:nth-child(5) {
+  min-width: 240px;
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+/* Rating */
+#tab-feedback tbody td:nth-child(4) {
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+/* Customer email */
+#tab-feedback tbody td:nth-child(3) {
+  color: #666;
+  font-size: 13px;
+}
+
+/* Submitted date */
+#tab-feedback tbody td:nth-child(6) {
+  white-space: nowrap;
+  color: #666;
+  font-size: 13px;
+}
+
+/* Status column */
+#tab-feedback tbody td:nth-child(7) {
+  white-space: nowrap;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  #tab-feedback tbody td {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  #tab-feedback tbody td:nth-child(5) {
+    min-width: 200px;
+  }
+}
