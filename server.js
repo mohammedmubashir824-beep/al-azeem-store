@@ -9,6 +9,7 @@ const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
 const paymentRoutes = require("./routes/payment");
 const dashboardRoutes = require("./routes/dashboard");
+const feedbackRoutes = require("./routes/feedback");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 app.get("/api/store-info", (req, res) => {
   res.json({
