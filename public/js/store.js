@@ -844,6 +844,7 @@ if (feedbackBtn && feedbackModal && closeFeedback) {
 // Submit feedback
 const submitFeedback = document.getElementById("submitFeedback");
 const feedbackText = document.getElementById("feedbackText");
+if (submitFeedback && feedbackText) {
 
 submitFeedback.addEventListener("click", async () => {
   const rating = Number(feedbackRating.value);
@@ -932,6 +933,7 @@ setTimeout(() => {
     submitFeedback.textContent = "Submit Feedback";
   }
 });
+}
 
 // =====================================================
 // CUSTOMER POLICY AGREEMENT PAGE
