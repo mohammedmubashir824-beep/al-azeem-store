@@ -77,6 +77,13 @@ input, select, textarea { font-family: var(--font-body); }
 }
 .topbar-inner { display: flex; align-items: center; gap: 14px; padding: 12px 20px; }
 .brand-block { display: flex; align-items: center; gap: 12px; }
+.site-logo {
+  display: block;
+  width: 370px;
+  height: 62px;
+  object-fit: fill;
+  flex-shrink: 0;
+}
 .brand-name { font-family: var(--font-display); font-size: 20px; line-height: 1.15; letter-spacing: 0.3px; }
 .brand-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--turmeric-light); margin-top: 2px; }
 .topbar-actions {
@@ -686,7 +693,7 @@ select.status-select { border: 1px solid var(--rule); border-radius: 4px; paddin
 #profilePhone:focus,
 #profileAddress:focus {
   border-color: var(--ink);
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05); }
 
 #profileEmail {
   opacity: 0.7;
@@ -1100,3 +1107,4 @@ html {
 #searchBtn {
   flex-shrink: 0;
 }
+
