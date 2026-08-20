@@ -52,21 +52,38 @@ if (document.getElementById("loginForm")) {
   });
 
   loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById("loginMsg");
-    msg.style.display = "none";
-    try {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      const data = await api("/auth/customer/login", { method: "POST", body: JSON.stringify({ email, password }) });
-      setSession(data.token, data.name);
-      window.location.href = "/";
-    } catch (err) {
-      msg.textContent = err.message;
-      msg.className = "form-msg error";
-    }
-  });
 
+  e.preventDefault();
+
+  const msg = document.getElementById("loginMsg");
+  msg.style.display = "none";
+
+  try {
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    const data = await api("/auth/customer/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password })
+    });
+
+    setSession(data.token, data.name);
+
+    if (data.policiesAcceptedAt) {
+      window.location.href = "/";
+    } else {
+      window.location.href = "/agree.html";
+    }
+
+  } catch (err) {
+
+    msg.textContent = err.message;
+    msg.className = "form-msg error";
+
+  }
+
+});
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const msg = document.getElementById("registerMsg");
@@ -93,7 +110,12 @@ if (document.getElementById("loginForm")) {
     try {
       const data = await api("/auth/customer/google", { method: "POST", body: JSON.stringify({ idToken: response.credential }) });
       setSession(data.token, data.name);
-      window.location.href = "/";
+
+if (data.policiesAcceptedAt) {
+  window.location.href = "/";
+} else {
+  window.location.href = "/agree.html";
+}
     } catch (err) {
       msg.textContent = err.message;
       msg.className = "form-msg error";
@@ -905,3 +927,44 @@ setTimeout(() => {
     submitFeedback.textContent = "Submit Feedback";
   }
 });
+
+// =====================================================
+// CUSTOMER POLICY AGREEMENT PAGE
+// =====================================================
+
+if (document.getElementById("continueBtn")) {
+  const continueBtn = document.getElementById("continueBtn");
+  const agreeCheckbox = document.getElementById("agreeCheckbox");
+  const agreeMsg = document.getElementById("agreeMsg");
+
+  continueBtn.addEventListener("click", async () => {
+    agreeMsg.style.display = "none";
+
+    if (!agreeCheckbox.checked) {
+      agreeMsg.textContent =
+        "Please check the box to agree before continuing.";
+      agreeMsg.style.display = "block";
+      return;
+    }
+
+    continueBtn.disabled = true;
+    continueBtn.textContent = "Saving...";
+
+    try {
+      await api("/auth/customer/accept-policies", {
+        method: "PATCH"
+      });
+
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Policy agreement error:", err);
+
+      agreeMsg.textContent =
+        err.message || "Could not save your agreement. Please try again.";
+      agreeMsg.style.display = "block";
+
+      continueBtn.disabled = false;
+      continueBtn.textContent = "Continue to Store";
+    }
+  });
+}

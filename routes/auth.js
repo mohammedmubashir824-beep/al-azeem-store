@@ -2,7 +2,7 @@ const express = require("express");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const supabase = require("../db/supabase");
-const { signToken } = require("../middleware/auth");
+const { signToken, requireCustomer } = require("../middleware/auth");
 const { sendConfirmationEmail, sendPasswordResetEmail } = require("../utils/email");
 const { verifyGoogleToken } = require("../utils/google-auth");
 
@@ -19,7 +19,8 @@ function customerResponse(customer, token) {
     email: customer.email,
     phone: customer.phone,
     address: customer.address,
-    emailVerified: customer.email_verified
+    emailVerified: customer.email_verified,
+    policiesAcceptedAt: customer.policies_accepted_at || null
   };
 }
 
@@ -103,6 +104,30 @@ router.post("/customer/login", async (req, res) => {
   }
   const token = signToken({ id: customer.id, name: customer.name, email: customer.email, role: "customer" });
   res.json(customerResponse(customer, token));
+});
+// ---- Customer accepts store policies ----
+
+router.patch("/customer/accept-policies", requireCustomer, async (req, res) => {
+  const { data, error } = await supabase
+    .from("customers")
+    .update({
+      policies_accepted_at: new Date().toISOString()
+    })
+    .eq("id", req.customer.id)
+    .select("policies_accepted_at")
+    .single();
+
+  if (error) {
+    console.error("Policy acceptance error:", error);
+    return res.status(500).json({
+      error: "Could not save your policy agreement."
+    });
+  }
+
+  res.json({
+    success: true,
+    policiesAcceptedAt: data.policies_accepted_at
+  });
 });
 // ---- Customer profile ----
 router.get("/customer/profile", async (req, res) => {
