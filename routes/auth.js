@@ -78,7 +78,13 @@ router.post("/customer/register", async (req, res) => {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: "Could not create account. Please try again." });
+     if (error) {
+  console.error("Customer registration Supabase error:", error);
+
+  return res.status(500).json({
+    error: error.message || "Could not create account. Please try again."
+  });
+}
 
   try {
     await sendConfirmationEmail(email, name, verifyToken);
