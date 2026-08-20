@@ -212,6 +212,44 @@
   </div>
 </aside>
 
+<!-- Feedback Modal -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="feedback-modal">
+
+    <div class="feedback-head">
+      <h2>Share your feedback</h2>
+      <button class="icon-btn" id="closeFeedback">✕</button>
+    </div>
+
+    <p class="feedback-subtitle">
+      We'd love to know about your experience with AL AZEEM.
+    </p>
+
+    <!-- Star Rating -->
+    <div class="feedback-rating">
+      <button type="button" class="star" data-rating="1">★</button>
+      <button type="button" class="star" data-rating="2">★</button>
+      <button type="button" class="star" data-rating="3">★</button>
+      <button type="button" class="star" data-rating="4">★</button>
+      <button type="button" class="star" data-rating="5">★</button>
+    </div>
+
+    <input type="hidden" id="feedbackRating" value="0">
+
+    <!-- Feedback Text -->
+    <textarea
+      id="feedbackText"
+      placeholder="Tell us what you liked or what we can improve..."
+      rows="5"
+      maxlength="500"
+    ></textarea>
+
+    <button class="btn btn-primary btn-block" id="submitFeedback">
+      Submit Feedback
+    </button>
+
+  </div>
+</div>
 <!-- Checkout Modal -->
 <div class="overlay" id="checkoutOverlay"></div>
 <aside class="drawer" id="checkoutDrawer">

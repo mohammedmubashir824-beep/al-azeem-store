@@ -1101,3 +1101,138 @@ html {
   flex-shrink: 0;
 }
 
+/* =========================================================
+   FEEDBACK MODAL
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 42, 47, 0.55);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(3px);
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.feedback-modal {
+  width: min(460px, 100%);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 20px 55px rgba(27, 42, 47, 0.25);
+  animation: feedbackModalIn 0.22s ease;
+}
+
+@keyframes feedbackModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.feedback-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.feedback-head h2 {
+  font-size: 22px;
+}
+
+.feedback-head .icon-btn {
+  color: var(--ink);
+  border-color: var(--rule);
+  background: transparent;
+}
+
+.feedback-subtitle {
+  margin: 8px 0 18px;
+  color: #74807A;
+  font-size: 13.5px;
+}
+
+/* Star rating */
+
+.feedback-rating {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 8px 0 20px;
+}
+
+.feedback-rating .star {
+  border: none;
+  background: transparent;
+  color: #CFC6AF;
+  font-size: 34px;
+  line-height: 1;
+  padding: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.feedback-rating .star:hover {
+  transform: scale(1.12);
+}
+
+.feedback-rating .star.active {
+  color: var(--turmeric);
+}
+
+/* Feedback textarea */
+
+#feedbackText {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#feedbackText:focus {
+  border-color: var(--turmeric);
+  box-shadow: 0 0 0 3px rgba(201, 138, 44, 0.12);
+}
+
+#submitFeedback {
+  margin-top: 14px;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .feedback-modal {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .feedback-head h2 {
+    font-size: 20px;
+  }
+
+  .feedback-rating .star {
+    font-size: 30px;
+  }
+}

@@ -763,3 +763,51 @@ function showToast(message) {
     toast.style.opacity = '0';
   }, 2000);
 }
+
+// =========================================================
+// FEEDBACK MODAL
+// =========================================================
+
+const feedbackBtn = document.getElementById("feedbackBtn");
+const feedbackModal = document.getElementById("feedbackModal");
+const closeFeedback = document.getElementById("closeFeedback");
+const feedbackRating = document.getElementById("feedbackRating");
+const stars = document.querySelectorAll(".feedback-rating .star");
+
+feedbackBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  feedbackModal.classList.add("open");
+
+  document.body.style.overflow = "hidden";
+});
+
+closeFeedback.addEventListener("click", () => {
+  feedbackModal.classList.remove("open");
+
+  document.body.style.overflow = "";
+});
+
+// Close when clicking outside the modal
+feedbackModal.addEventListener("click", (e) => {
+  if (e.target === feedbackModal) {
+    feedbackModal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+});
+
+// Star rating
+stars.forEach((star) => {
+  star.addEventListener("click", () => {
+    const rating = Number(star.dataset.rating);
+
+    feedbackRating.value = rating;
+
+    stars.forEach((s) => {
+      s.classList.toggle(
+        "active",
+        Number(s.dataset.rating) <= rating
+      );
+    });
+  });
+});
