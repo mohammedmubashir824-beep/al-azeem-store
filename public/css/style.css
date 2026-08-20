@@ -1236,3 +1236,57 @@ html {
     font-size: 30px;
   }
 }
+
+/* =========================
+   FEEDBACK STATS
+========================= */
+
+.feedback-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 0 0 20px;
+}
+
+.feedback-stat-card {
+  background: var(--panel, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.feedback-stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.feedback-stat-card span {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.feedback-stat-card strong {
+  display: block;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .feedback-stats {
+    grid-template-columns: 1fr;
+  }
+}
