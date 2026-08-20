@@ -389,9 +389,7 @@ async function markFeedbackRead(feedbackId) {
 
     await loadFeedback();
   } catch (err) {
-    if (!(await handleAuthError(err))) {
-      console.error("Mark feedback read error:", err);
-      alert(err.message || "Could not mark feedback as reviewed.");
-    }
+    console.error("Mark feedback read error:", err);
+    alert(err.message || "Could not mark feedback as reviewed.");
   }
 }
