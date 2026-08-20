@@ -895,7 +895,7 @@ setTimeout(() => {
 
   feedbackModal.classList.remove("open");
   document.body.style.overflow = "";
-}, 2500);
+}, 1500);
 
   } catch (error) {
     console.error("Feedback submission error:", error);
