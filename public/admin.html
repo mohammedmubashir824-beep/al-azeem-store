@@ -140,6 +140,35 @@
 
 </div>
 
+<!-- Feedback Filters -->
+<div class="feedback-filters">
+
+  <div class="feedback-search">
+    <span>🔍</span>
+    <input
+      type="text"
+      id="feedbackSearch"
+      placeholder="Search customer, email or feedback..."
+    />
+  </div>
+
+  <select id="feedbackRatingFilter">
+    <option value="all">All Ratings</option>
+    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+    <option value="3">⭐⭐⭐ 3 Stars</option>
+    <option value="2">⭐⭐ 2 Stars</option>
+    <option value="1">⭐ 1 Star</option>
+  </select>
+
+  <select id="feedbackStatusFilter">
+    <option value="all">All Status</option>
+    <option value="new">🔴 New</option>
+    <option value="reviewed">✓ Reviewed</option>
+  </select>
+
+</div>
+
   <div class="panel" style="padding:0;overflow-x:auto;">
     <table>
       <thead>

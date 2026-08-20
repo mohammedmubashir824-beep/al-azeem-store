@@ -16,6 +16,8 @@ async function api(path, options = {}) {
   return data;
 }
 
+let allFeedback = [];
+
 // =====================================================
 // ADMIN LOGIN PAGE
 // =====================================================
@@ -53,6 +55,7 @@ if (document.getElementById("tab-dashboard")) {
 async function loadFeedback() {
   try {
     const feedback = await api("/dashboard/feedback");
+    allFeedback = feedback || [];
 
     const body = document.getElementById("feedbackBody");
 
@@ -88,44 +91,8 @@ async function loadFeedback() {
       fiveStarEl.textContent = fiveStarReviews;
     }
 
-    // No feedback
-    if (!feedback || feedback.length === 0) {
-      body.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align:center;padding:30px;">
-            No feedback yet.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    // Display feedback table
-    body.innerHTML = feedback.map((item, index) => {
-      const customerName = item.customers?.name || "Unknown";
-      const customerEmail = item.customers?.email || "—";
-
-      const date = new Date(item.created_at).toLocaleString();
-
-     const stars = "⭐".repeat(Number(item.rating));
-
-const status = item.is_read
-  ? `<span class="feedback-status reviewed">✓ Reviewed</span>`
-  : `<button class="feedback-review-btn" onclick="markFeedbackRead('${item.id}')">🔴 NEW — Mark Reviewed</button>`;
-
-return `
-  <tr class="${item.is_read ? "" : "feedback-unread"}">
-    <td>${index + 1}</td>
-    <td>${customerName}</td>
-    <td>${customerEmail}</td>
-    <td>${stars}</td>
-    <td>${item.message}</td>
-    <td>${date}</td>
-    <td>${status}</td>
-  </tr>
-`;
-    }).join("");
-
+   // Display feedback table
+   renderFeedbackTable(feedback);
   } catch (err) {
     if (!(await handleAuthError(err))) {
       console.error("Feedback loading error:", err);
@@ -393,3 +360,82 @@ async function markFeedbackRead(feedbackId) {
     alert(err.message || "Could not mark feedback as reviewed.");
   }
 }
+
+function applyFeedbackFilters() {
+  const search = document
+    .getElementById("feedbackSearch")
+    .value
+    .toLowerCase()
+    .trim();
+
+  const ratingFilter = document.getElementById("feedbackRatingFilter").value;
+  const statusFilter = document.getElementById("feedbackStatusFilter").value;
+
+  const filtered = allFeedback.filter((item) => {
+    const customerName = item.customers?.name || "Unknown";
+    const customerEmail = item.customers?.email || "";
+    const message = item.message || "";
+
+    const matchesSearch =
+      customerName.toLowerCase().includes(search) ||
+      customerEmail.toLowerCase().includes(search) ||
+      message.toLowerCase().includes(search);
+
+    const matchesRating =
+      ratingFilter === "all" ||
+      Number(item.rating) === Number(ratingFilter);
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "new" && !item.is_read) ||
+      (statusFilter === "reviewed" && item.is_read);
+
+    return matchesSearch && matchesRating && matchesStatus;
+  });
+
+  renderFeedbackTable(filtered);
+}
+
+function renderFeedbackTable(feedback) {
+  const body = document.getElementById("feedbackBody");
+
+  if (!feedback || feedback.length === 0) {
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center;padding:30px;">
+          No matching feedback found.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  body.innerHTML = feedback.map((item, index) => {
+    const customerName = item.customers?.name || "Unknown";
+    const customerEmail = item.customers?.email || "—";
+    const date = new Date(item.created_at).toLocaleString();
+    const stars = "⭐".repeat(Number(item.rating));
+
+    const status = item.is_read
+      ? `<span class="feedback-status reviewed">✓ Reviewed</span>`
+      : `<button class="feedback-review-btn" onclick="markFeedbackRead('${item.id}')">🔴 NEW — Mark Reviewed</button>`;
+
+    return `
+      <tr class="${item.is_read ? "" : "feedback-unread"}">
+        <td>${index + 1}</td>
+        <td>${customerName}</td>
+        <td>${customerEmail}</td>
+        <td>${stars}</td>
+        <td>${item.message}</td>
+        <td>${date}</td>
+        <td>${status}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+document.getElementById("feedbackSearch")?.addEventListener("input", applyFeedbackFilters);
+
+document.getElementById("feedbackRatingFilter")?.addEventListener("change", applyFeedbackFilters);
+
+document.getElementById("feedbackStatusFilter")?.addEventListener("change", applyFeedbackFilters);
