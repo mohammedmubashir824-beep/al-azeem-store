@@ -55,6 +55,7 @@ router.get("/feedback", requireAdmin, async (req, res) => {
       rating,
       message,
       created_at,
+      is_read,
       customers (
         name,
         email
@@ -68,6 +69,24 @@ router.get("/feedback", requireAdmin, async (req, res) => {
   }
 
   res.json(data || []);
+});
+
+router.patch("/feedback/:id/read", requireAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+    .from("feedback")
+    .update({ is_read: true })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Feedback update error:", error);
+    return res.status(500).json({ error: "Could not mark feedback as reviewed." });
+  }
+
+  res.json(data);
 });
 
 module.exports = router;

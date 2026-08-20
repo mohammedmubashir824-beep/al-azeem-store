@@ -1290,3 +1290,37 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   FEEDBACK STATUS
+========================= */
+
+.feedback-unread {
+  background: rgba(255, 193, 7, 0.08);
+}
+
+.feedback-review-btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff3cd;
+  color: #856404;
+  transition: 0.2s ease;
+}
+
+.feedback-review-btn:hover {
+  transform: translateY(-1px);
+}
+
+.feedback-status.reviewed {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #2e7d32;
+}

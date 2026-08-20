@@ -92,7 +92,7 @@ async function loadFeedback() {
     if (!feedback || feedback.length === 0) {
       body.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align:center;padding:30px;">
+          <td colspan="7" style="text-align:center;padding:30px;">
             No feedback yet.
           </td>
         </tr>
@@ -107,18 +107,23 @@ async function loadFeedback() {
 
       const date = new Date(item.created_at).toLocaleString();
 
-      const stars = "⭐".repeat(Number(item.rating));
+     const stars = "⭐".repeat(Number(item.rating));
 
-      return `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${customerName}</td>
-          <td>${customerEmail}</td>
-          <td>${stars}</td>
-          <td>${item.message}</td>
-          <td>${date}</td>
-        </tr>
-      `;
+const status = item.is_read
+  ? `<span class="feedback-status reviewed">✓ Reviewed</span>`
+  : `<button class="feedback-review-btn" onclick="markFeedbackRead('${item.id}')">🔴 NEW — Mark Reviewed</button>`;
+
+return `
+  <tr class="${item.is_read ? "" : "feedback-unread"}">
+    <td>${index + 1}</td>
+    <td>${customerName}</td>
+    <td>${customerEmail}</td>
+    <td>${stars}</td>
+    <td>${item.message}</td>
+    <td>${date}</td>
+    <td>${status}</td>
+  </tr>
+`;
     }).join("");
 
   } catch (err) {
@@ -374,4 +379,19 @@ async function loadFeedback() {
 
   // ---- init ----
   loadDashboard();
+}
+
+async function markFeedbackRead(feedbackId) {
+  try {
+    await api(`/dashboard/feedback/${feedbackId}/read`, {
+      method: "PATCH"
+    });
+
+    await loadFeedback();
+  } catch (err) {
+    if (!(await handleAuthError(err))) {
+      console.error("Mark feedback read error:", err);
+      alert(err.message || "Could not mark feedback as reviewed.");
+    }
+  }
 }
