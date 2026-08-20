@@ -812,74 +812,7 @@ stars.forEach((star) => {
   });
 });
 
-// Submit feedback
-const submitFeedback = document.getElementById("submitFeedback");
-const feedbackMessage = document.getElementById("feedbackMessage");
 
-submitFeedback.addEventListener("click", async () => {
-  const rating = Number(feedbackRating.value);
-  const message = feedbackMessage.value.trim();
-
-  if (!rating) {
-    alert("Please select a star rating.");
-    return;
-  }
-
-  if (!message) {
-    alert("Please enter your feedback.");
-    return;
-  }
-
-  const token = getToken();
-
-  if (!token) {
-    alert("Please log in to submit feedback.");
-    window.location.href = "/login.html";
-    return;
-  }
-
-  submitFeedback.disabled = true;
-  submitFeedback.textContent = "Submitting...";
-
-  try {
-    const response = await fetch("/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        rating,
-        message
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Could not submit feedback.");
-    }
-
-    alert("Thank you for your feedback! ❤️");
-
-    feedbackMessage.value = "";
-    feedbackRating.value = "";
-
-    stars.forEach((star) => {
-      star.classList.remove("active");
-    });
-
-    feedbackModal.classList.remove("open");
-    document.body.style.overflow = "";
-
-  } catch (error) {
-    console.error("Feedback submission error:", error);
-    alert(error.message || "Could not submit feedback. Please try again.");
-  } finally {
-    submitFeedback.disabled = false;
-    submitFeedback.textContent = "Submit Feedback";
-  }
-});
 
 // Submit feedback
 const submitFeedback = document.getElementById("submitFeedback");
