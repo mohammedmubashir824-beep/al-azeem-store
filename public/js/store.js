@@ -789,6 +789,9 @@ function showToast(message) {
 // =========================================================
 // FEEDBACK MODAL
 // =========================================================
+// =========================================================
+// FEEDBACK MODAL
+// =========================================================
 
 const feedbackBtn = document.getElementById("feedbackBtn");
 const feedbackModal = document.getElementById("feedbackModal");
@@ -796,43 +799,45 @@ const closeFeedback = document.getElementById("closeFeedback");
 const feedbackRating = document.getElementById("feedbackRating");
 const stars = document.querySelectorAll(".feedback-rating .star");
 
-feedbackBtn.addEventListener("click", (e) => {
-  e.preventDefault();
+if (feedbackBtn && feedbackModal && closeFeedback) {
 
-  feedbackModal.classList.add("open");
+  feedbackBtn.addEventListener("click", (e) => {
+    e.preventDefault();
 
-  document.body.style.overflow = "hidden";
-});
+    feedbackModal.classList.add("open");
 
-closeFeedback.addEventListener("click", () => {
-  feedbackModal.classList.remove("open");
+    document.body.style.overflow = "hidden";
+  });
 
-  document.body.style.overflow = "";
-});
-
-// Close when clicking outside the modal
-feedbackModal.addEventListener("click", (e) => {
-  if (e.target === feedbackModal) {
+  closeFeedback.addEventListener("click", () => {
     feedbackModal.classList.remove("open");
     document.body.style.overflow = "";
-  }
-});
+  });
 
-// Star rating
-stars.forEach((star) => {
-  star.addEventListener("click", () => {
-    const rating = Number(star.dataset.rating);
+  feedbackModal.addEventListener("click", (e) => {
+    if (e.target === feedbackModal) {
+      feedbackModal.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+  });
 
-    feedbackRating.value = rating;
+  stars.forEach((star) => {
+    star.addEventListener("click", () => {
+      const rating = Number(star.dataset.rating);
 
-    stars.forEach((s) => {
-      s.classList.toggle(
-        "active",
-        Number(s.dataset.rating) <= rating
-      );
+      feedbackRating.value = rating;
+
+      stars.forEach((s) => {
+        s.classList.toggle(
+          "active",
+          Number(s.dataset.rating) <= rating
+        );
+      });
     });
   });
-});
+
+}
+
 
 
 
