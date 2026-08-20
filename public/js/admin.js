@@ -56,6 +56,39 @@ async function loadFeedback() {
 
     const body = document.getElementById("feedbackBody");
 
+    // Update feedback statistics
+    const totalEl = document.getElementById("feedbackTotal");
+    const averageEl = document.getElementById("feedbackAverage");
+    const fiveStarEl = document.getElementById("feedbackFiveStar");
+
+    const totalFeedback = feedback ? feedback.length : 0;
+
+    const ratings = feedback
+      ? feedback
+          .map(item => Number(item.rating))
+          .filter(rating => !isNaN(rating))
+      : [];
+
+    const averageRating =
+      ratings.length > 0
+        ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+        : 0;
+
+    const fiveStarReviews = ratings.filter(rating => rating === 5).length;
+
+    if (totalEl) {
+      totalEl.textContent = totalFeedback;
+    }
+
+    if (averageEl) {
+      averageEl.textContent = averageRating.toFixed(1);
+    }
+
+    if (fiveStarEl) {
+      fiveStarEl.textContent = fiveStarReviews;
+    }
+
+    // No feedback
     if (!feedback || feedback.length === 0) {
       body.innerHTML = `
         <tr>
@@ -67,6 +100,7 @@ async function loadFeedback() {
       return;
     }
 
+    // Display feedback table
     body.innerHTML = feedback.map((item, index) => {
       const customerName = item.customers?.name || "Unknown";
       const customerEmail = item.customers?.email || "—";
