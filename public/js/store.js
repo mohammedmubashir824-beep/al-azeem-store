@@ -823,22 +823,33 @@ submitFeedback.addEventListener("click", async () => {
   const message = feedbackText.value.trim();
 
   if (!rating) {
-    alert("Please select a star rating.");
-    return;
-  }
+  const feedbackMessage = document.getElementById("feedbackMessage");
+  feedbackMessage.textContent = "⭐ Please select a star rating.";
+  feedbackMessage.className = "feedback-warning";
+  feedbackMessage.style.display = "block";
+  return;
+}
 
   if (!message) {
-    alert("Please enter your feedback.");
-    return;
-  }
+  const feedbackMessage = document.getElementById("feedbackMessage");
+  feedbackMessage.textContent = "💬 Please enter your feedback.";
+  feedbackMessage.className = "feedback-warning";
+  feedbackMessage.style.display = "block";
+  return;
+}
 
   const token = getToken();
 
   if (!token) {
-    alert("Please log in to submit feedback.");
-    window.location.href = "/login.html";
-    return;
+  const feedbackMessage = document.getElementById("feedbackMessage");
+
+  if (feedbackMessage) {
+    feedbackMessage.textContent = "👤 Please log in to submit feedback.";
+    feedbackMessage.style.display = "block";
   }
+
+  return;
+}
 
   submitFeedback.disabled = true;
   submitFeedback.textContent = "Submitting...";
@@ -862,7 +873,13 @@ submitFeedback.addEventListener("click", async () => {
       throw new Error(data.error || "Could not submit feedback.");
     }
 
-    alert("Thank you for your feedback! ❤️");
+    const feedbackMessage = document.getElementById("feedbackSuccess");
+
+if (feedbackMessage) {
+  feedbackMessage.textContent = "💬 Thank you for your feedback! ⭐";
+  feedbackMessage.className = "feedback-success";
+  feedbackMessage.style.display = "block";
+}
 
     feedbackText.value = "";
     feedbackRating.value = "";
