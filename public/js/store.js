@@ -873,26 +873,29 @@ submitFeedback.addEventListener("click", async () => {
       throw new Error(data.error || "Could not submit feedback.");
     }
 
-    const feedbackMessage = document.getElementById("feedbackSuccess");
+    const feedbackMessage = document.getElementById("feedbackMessage");
 
 if (feedbackMessage) {
-  feedbackMessage.textContent = "💬 Thank you for your feedback! ⭐";
+  feedbackMessage.textContent = "Thank you for your feedback! ❤️";
   feedbackMessage.className = "feedback-success";
   feedbackMessage.style.display = "block";
-   setTimeout(() => {
-    feedbackMessage.style.display = "none";
-  }, 2500);
 }
 
-    feedbackText.value = "";
-    feedbackRating.value = "";
+feedbackText.value = "";
+feedbackRating.value = "";
 
-    stars.forEach((star) => {
-      star.classList.remove("active");
-    });
+stars.forEach((star) => {
+  star.classList.remove("active");
+});
 
-    feedbackModal.classList.remove("open");
-    document.body.style.overflow = "";
+setTimeout(() => {
+  if (feedbackMessage) {
+    feedbackMessage.style.display = "none";
+  }
+
+  feedbackModal.classList.remove("open");
+  document.body.style.overflow = "";
+}, 2500);
 
   } catch (error) {
     console.error("Feedback submission error:", error);
